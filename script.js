@@ -1,55 +1,6 @@
 let board = new Array(64).fill(0);
 const boardContainer = document.getElementById('board');
 
-function Move(i) {
-    let piece;
-    if(i == -1) {
-        piece = 'black';
-    } else {
-        piece = 'white';
-    }
-    legalMove(piece);
-
-    let place = document.getElementById(i);
-    if(board[i] == -1) {
-        let move1 = document.getElementById(i + 7);
-        let move2 = document.getElementById(i + 9);
-        move1.addEventListener ('click', () => {
-            move1.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
-            place.innerHTML = "";
-            board[i] = 0;
-            board[i + 7] = -1;
-            console.log(board);
-        });
-        move2.addEventListener ('click', () => {
-            move2.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
-            place.innerHTML = "";
-            board[i] = 0;
-            board[i + 9] = -1;
-            console.log(board);
-        });
-    } else if(board[i] == 1) {
-        let move1 = document.getElementById(i - 7);
-        let move2 = document.getElementById(i - 9);
-        move1.addEventListener ('click', () => {
-            move1.innerHTML = '<img src="/pieces/white.png">';
-            place.innerHTML = "";
-            board[i] = 0;
-            board[i - 7] = 1;
-            console.log(board);
-            //move1.removeEventListener('click' ());
-        });
-        move2.addEventListener ('click', () => {
-            move2.innerHTML = '<img src="/pieces/white.png">';
-            place.innerHTML = "";
-            board[i] = 0;
-            board[i - 9] = 1;
-            console.log(board);
-            //move1.removeEventListener('click' ());
-        });
-    } 
-}
-
 function generateBoard() {
     let index = 0;
     let blackPieces = 12;
@@ -98,16 +49,58 @@ function generateBoard() {
             index++;
         };
     };
-    for (let i = 0; i < 64; i++) {
-        document.getElementById(i).addEventListener ('click', (event) => {
-            Move(i);
-        });
-    }
 };
 
-const Player = (turn, color) => {
+function Move(i, white, black) {
+    let piece;
+    if (white.turn == 1) {
+        piece = 'white';
+    } else {
+        piece = 'black'
+    }
+    console.log(checkWin())
+    legalMove(piece);
 
-    return {turn, color}
+    let place = document.getElementById(i);
+    if(board[i] == -1 && piece == 'black') {
+        let move1 = document.getElementById(i + 7);
+        let move2 = document.getElementById(i + 9);
+        move1.addEventListener ('click', () => {
+            move1.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
+            place.innerHTML = "";
+            board[i] = 0;
+            board[i + 7] = -1;
+            black.updateTurn(black);
+            white.updateTurn(white);
+        });
+        move2.addEventListener ('click', () => {
+            move2.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
+            place.innerHTML = "";
+            board[i] = 0;
+            board[i + 9] = -1;
+            black.updateTurn(black);
+            white.updateTurn(white);
+        });
+    } else if(board[i] == 1 && piece == 'white') {
+        let move1 = document.getElementById(i - 7);
+        let move2 = document.getElementById(i - 9);
+        move1.addEventListener ('click', () => {
+            move1.innerHTML = '<img src="/pieces/white.png">';
+            place.innerHTML = "";
+            board[i] = 0;
+            board[i - 7] = 1;
+            black.updateTurn(black);
+            white.updateTurn(white);
+        });
+        move2.addEventListener ('click', () => {
+            move2.innerHTML = '<img src="/pieces/white.png">';
+            place.innerHTML = "";
+            board[i] = 0;
+            board[i - 9] = 1;
+            black.updateTurn(black);
+            white.updateTurn(white);
+        });
+    } 
 }
 
 function legalMove(player) {
@@ -121,7 +114,8 @@ function legalMove(player) {
                         document.getElementById(i - 14).innerHTML = '<img src="/pieces/white.png">';
                         board[i] = 0;
                         board[i - 18] = 1;
-                        console.log(board)
+                        black.updateTurn(black);
+                        white.updateTurn(white);
                     })
                 }
             } else if (board[i - 9] == -1) {
@@ -132,6 +126,8 @@ function legalMove(player) {
                         document.getElementById(i - 18).innerHTML = '<img src="/pieces/white.png">';
                         board[i] = 0;
                         board[i - 18] = 1;
+                        black.updateTurn(black);
+                        white.updateTurn(white);
                     })
                 }
             }
@@ -144,6 +140,8 @@ function legalMove(player) {
                         document.getElementById(i + 14).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
                         board[i] = 0;
                         board[i + 18] = 1;
+                        black.updateTurn(black);
+                        white.updateTurn(white);
                     });
                 };
             } else if (board[i + 9] == 1) {
@@ -154,6 +152,8 @@ function legalMove(player) {
                         document.getElementById(i + 18).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
                         board[i] = 0;
                         board[i + 18] = 1;
+                        black.updateTurn(black);
+                        white.updateTurn(white);
                     });
                 };
             };
@@ -161,10 +161,44 @@ function legalMove(player) {
     };
 };
 
+function checkWin() {
+    let totalBlack = 0;
+    let totalWhite= 0;
+    for(let i = 0; i < 64; i++) {
+        if(board[i] == -1) {
+            totalBlack++;
+        } else if (board[i] == 1) {
+            totalWhite++;
+        }
+    }
+    if (totalBlack == 0) {
+        return 'whiteWins'
+    } else if (totalWhite == 0) {
+        return 'blackWins'
+    }
+};
+
+const Player = (turn, color) => {
+    const updateTurn = (piece) => {
+        if (piece.turn == 1) {
+           piece.turn = 0;
+        } else {
+            piece.turn = 1;
+        }
+    }
+
+    return {turn, color, updateTurn}
+};
+
 function game() {
     generateBoard();
     const white = Player(1, 'white');
     const black = Player(0, 'black');
+    for (let i = 0; i < 64; i++) {
+        document.getElementById(i).addEventListener ('click', () => {
+            Move(i, white, black);
+        });
+    }
 }
 
 game();

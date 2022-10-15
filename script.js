@@ -1,7 +1,15 @@
 let board = new Array(64).fill(0);
 const boardContainer = document.getElementById('board');
 
-function testButton(i) {
+function Move(i) {
+    let piece;
+    if(i == -1) {
+        piece = 'black';
+    } else {
+        piece = 'white';
+    }
+    legalMove(piece);
+
     let place = document.getElementById(i);
     if(board[i] == -1) {
         let move1 = document.getElementById(i + 7);
@@ -12,7 +20,6 @@ function testButton(i) {
             board[i] = 0;
             board[i + 7] = -1;
             console.log(board);
-            //move1.removeEventListener('click' ());
         });
         move2.addEventListener ('click', () => {
             move2.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
@@ -20,12 +27,30 @@ function testButton(i) {
             board[i] = 0;
             board[i + 9] = -1;
             console.log(board);
+        });
+    } else if(board[i] == 1) {
+        let move1 = document.getElementById(i - 7);
+        let move2 = document.getElementById(i - 9);
+        move1.addEventListener ('click', () => {
+            move1.innerHTML = '<img src="/pieces/white.png">';
+            place.innerHTML = "";
+            board[i] = 0;
+            board[i - 7] = 1;
+            console.log(board);
+            //move1.removeEventListener('click' ());
+        });
+        move2.addEventListener ('click', () => {
+            move2.innerHTML = '<img src="/pieces/white.png">';
+            place.innerHTML = "";
+            board[i] = 0;
+            board[i - 9] = 1;
+            console.log(board);
             //move1.removeEventListener('click' ());
         });
     } 
 }
 
-function generateBoard(board) {
+function generateBoard() {
     let index = 0;
     let blackPieces = 12;
     let blank = 8;
@@ -75,9 +100,71 @@ function generateBoard(board) {
     };
     for (let i = 0; i < 64; i++) {
         document.getElementById(i).addEventListener ('click', (event) => {
-            testButton(i);
+            Move(i);
         });
     }
 };
 
-generateBoard(board);
+const Player = (turn, color) => {
+
+    return {turn, color}
+}
+
+function legalMove(player) {
+    for (let i = 0; i < board.length; i++) {
+        if (player == 'white') {
+            if(board[i - 7] == -1) {
+                if(board[i - 14] == 0) {
+                    document.getElementById(i - 14).addEventListener ('click', () => {
+                        document.getElementById(i).innerHTML = '';
+                        document.getElementById(i - 7).innerHTML = '';
+                        document.getElementById(i - 14).innerHTML = '<img src="/pieces/white.png">';
+                        board[i] = 0;
+                        board[i - 18] = 1;
+                        console.log(board)
+                    })
+                }
+            } else if (board[i - 9] == -1) {
+                if(board[i - 18] == 0) {
+                    document.getElementById(i - 18).addEventListener ('click', () => {
+                        document.getElementById(i).innerHTML = '';
+                        document.getElementById(i - 9).innerHTML = '';
+                        document.getElementById(i - 18).innerHTML = '<img src="/pieces/white.png">';
+                        board[i] = 0;
+                        board[i - 18] = 1;
+                    })
+                }
+            }
+        } else if (player == 'black') {
+            if(board[i + 7] == 1) {
+                if(board[i + 14] == 0) {
+                    document.getElementById(i + 14).addEventListener ('click', () => {
+                        document.getElementById(i).innerHTML = '';
+                        document.getElementById(i + 7).innerHTML = '';
+                        document.getElementById(i + 14).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
+                        board[i] = 0;
+                        board[i + 18] = 1;
+                    });
+                };
+            } else if (board[i + 9] == 1) {
+                if(board[i + 18] == 0) {
+                    document.getElementById(i + 18).addEventListener ('click', () => {
+                        document.getElementById(i).innerHTML = '';
+                        document.getElementById(i + 9).innerHTML = '';
+                        document.getElementById(i + 18).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
+                        board[i] = 0;
+                        board[i + 18] = 1;
+                    });
+                };
+            };
+        };
+    };
+};
+
+function game() {
+    generateBoard();
+    const white = Player(1, 'white');
+    const black = Player(0, 'black');
+}
+
+game();

@@ -56,7 +56,8 @@ function generateBoard() {
 };
 
 
-function whiteCapture(white, black) {
+function whiteCapture() {
+    let update = true;
     for (let i = 0; i < board.length; i++) {
         if (board[i] == 1 && board[i - 7] == -1 && board[i - 14] == 0) {
             document.getElementById(i - 14).addEventListener ('click', () => {
@@ -64,9 +65,9 @@ function whiteCapture(white, black) {
                 document.getElementById(i - 7).innerHTML = '';
                 document.getElementById(i - 14).innerHTML = '<img src="/pieces/white.png">';
                 board[i] = 0;
+                board[i - 7] = 0;
                 board[i - 18] = 1;
-                black.updateTurn(black);
-                white.updateTurn(white);
+                return(update)
             })
         } else if (board[i] == 1 && board[i - 9] == -1 && board[i - 18] == 0) {
             document.getElementById(i - 18).addEventListener ('click', () => {
@@ -74,15 +75,16 @@ function whiteCapture(white, black) {
                 document.getElementById(i - 9).innerHTML = '';
                 document.getElementById(i - 18).innerHTML = '<img src="/pieces/white.png">';
                 board[i] = 0;
+                board[i - 9] = 0;
                 board[i - 18] = 1;
-                black.updateTurn(black);
-                white.updateTurn(white);
+                return(update)
             }) 
         }
     }
 }
 
-function blackCapture(player, white, black) {
+function blackCapture() {
+    let update = true;
     for (let i = 0; i < board.length; i++) {
         if (board[i] == -1 && board[i + 7] == 1 && board[i + 14] == 0) {
                 document.getElementById(i + 14).addEventListener ('click', () => {
@@ -90,9 +92,9 @@ function blackCapture(player, white, black) {
                     document.getElementById(i + 7).innerHTML = '';
                     document.getElementById(i + 14).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
                     board[i] = 0;
+                    board[i + 7] = 0;
                     board[i + 18] = 1;
-                    black.updateTurn(black);
-                    white.updateTurn(white);
+                    return(update)
             });
         } else if (board[i] == -1 && board[i + 9] == 1 && board[i + 18] == 0) {
             document.getElementById(i + 18).addEventListener ('click', () => {
@@ -100,9 +102,9 @@ function blackCapture(player, white, black) {
                 document.getElementById(i + 9).innerHTML = '';
                 document.getElementById(i + 18).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
                 board[i] = 0;
+                board[i + 9] = 0;
                 board[i + 18] = 1;
-                black.updateTurn(black);
-                white.updateTurn(white);
+                return(update)
             });
         }   
     }
@@ -114,18 +116,31 @@ function Move(i, white, black) {
     if (white.turn == 1) {
         piece = 'white';
         whiteCapture(white, black);
+        if (whiteCapture) {
+            white.updateTurn(white);
+            black.updateTurn(black);
+        }
     } else {
         piece = 'black'
         blackCapture(white, black);
+        if (blackCapture) {
+            white.updateTurn(white);
+            black.updateTurn(black);
+        }
     }
+
     checkWin();
 
     let place = document.getElementById(i);
     //makes sure that the piece selected is matched by turn of the player
     if(board[i] == -1 && piece == 'black') {
-        if (board[i + 7] == 0) {
+        if (board[i + 7] == 0 && board[i + 9] == 0) {
             //makes sure that the board is emtpty down and to the left of selected piece
             let move1 = document.getElementById(i + 7);
+            move1.addEventListener('click', blackMove);
+
+            let move2 = document.getElementById(i + 9);
+            move2.addEventListener('click', blackMoveTwo);
 
             function blackMove(event) {
                 move1.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
@@ -134,14 +149,23 @@ function Move(i, white, black) {
                 board[i + 7] = -1;
                 black.updateTurn(black);
                 white.updateTurn(white);
-                move1.removeEventListener(onclick, blackMove);
-                move2.removeEventListener(onclick, blackMoveTwo);
+                move1.removeEventListener('click', blackMove);
+                move2.removeEventListener('click', blackMoveTwo);
             }
-
-            move1.addEventListener('click', blackMove);
-        } 
-        if (board[i + 9] == 0) {
+        
+            function blackMoveTwo(event) {
+                move2.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
+                place.innerHTML = "";
+                board[i] = 0;
+                board[i + 9] = -1;
+                black.updateTurn(black);
+                white.updateTurn(white);
+                move1.removeEventListener('click', blackMove);
+                move2.removeEventListener('click' , blackMoveTwo);
+            }
+        } else if (board[i + 9] == 0) {
             let move2 = document.getElementById(i + 9);
+            move2.addEventListener('click', blackMoveTwo);
 
             function blackMoveTwo(event) {
                 move2.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
@@ -150,16 +174,30 @@ function Move(i, white, black) {
                 board[i + 9] = -1;
                 black.updateTurn(black);
                 white.updateTurn(white);
-                move1.removeEventListener(onclick, blackMove);
-                move2.removeEventListener(onclick , blackMoveTwo);
+                move2.removeEventListener('click' , blackMoveTwo);
             }
+        } else if (board[i + 7] == 0) {
+            let move1 = document.getElementById(i + 7);
+            move1.addEventListener('click', blackMove);
 
-            move2.addEventListener('click', blackMoveTwo) 
+            function blackMove(event) {
+                move1.innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
+                place.innerHTML = "";
+                board[i] = 0;
+                board[i + 7] = -1;
+                black.updateTurn(black);
+                white.updateTurn(white);
+                move1.removeEventListener('click', blackMove);
+            }
         }
     } else if(board[i] == 1 && piece == 'white') {
-        if(board[i - 7] == 0){
+        if(board[i - 7] == 0 && board[i - 9] == 0){
             let move1 = document.getElementById(i - 7);
-            
+            move1.addEventListener ('click', whiteMove);
+
+            let move2 = document.getElementById(i - 9);
+            move2.addEventListener ('click', whiteMoveTwo);
+
             function whiteMove(event) {
                 move1.innerHTML = '<img src="/pieces/white.png">';
                 place.innerHTML = "";
@@ -167,25 +205,48 @@ function Move(i, white, black) {
                 board[i - 7] = 1;
                 black.updateTurn(black);
                 white.updateTurn(white);
-                move1.removeEventListener('click', whiteMove)
+                move1.removeEventListener('click', whiteMove);
+                move2.removeEventListener('click', whiteMoveTwo);
             };
-            move1.addEventListener ('click', whiteMove) 
-        } 
-        if (board[i - 9] == 0) {
-            let move2 = document.getElementById(i - 9);
-
-            function whiteMoveTwo() {
+        
+            function whiteMoveTwo(event) {
                 move2.innerHTML = '<img src="/pieces/white.png">';
                 place.innerHTML = "";
                 board[i] = 0;
                 board[i - 9] = 1;
                 black.updateTurn(black);
                 white.updateTurn(white);
-                move2.removeEventListener('click', whiteMoveTwo)
+                move1.removeEventListener('click', whiteMove);
+                move2.removeEventListener('click', whiteMoveTwo);
             };
-            move2.addEventListener ('click', whiteMoveTwo) 
+        } else if(board[i - 7] == 0){
+            let move1 = document.getElementById(i - 7);
+            move1.addEventListener ('click', whiteMove);
+
+            function whiteMove(event) {
+                move1.innerHTML = '<img src="/pieces/white.png">';
+                place.innerHTML = "";
+                board[i] = 0;
+                board[i - 7] = 1;
+                black.updateTurn(black);
+                white.updateTurn(white);
+                move1.removeEventListener('click', whiteMove);
+            };
+        } else if (board[i - 9] == 0) {
+            let move2 = document.getElementById(i - 9);
+            move2.addEventListener ('click', whiteMoveTwo);
+
+            function whiteMoveTwo(event) {
+                move2.innerHTML = '<img src="/pieces/white.png">';
+                place.innerHTML = "";
+                board[i] = 0;
+                board[i - 9] = 1;
+                black.updateTurn(black);
+                white.updateTurn(white);
+                move2.removeEventListener('click', whiteMoveTwo);
+            };
         }
-    } 
+    }
 }
 
 function checkWin() {

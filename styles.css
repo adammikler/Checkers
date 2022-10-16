@@ -22,12 +22,12 @@ h3 {
 }
 
 .board-container {
-    margin-left: 35vw;
-    width: 30vw;
-    height: 30vw;
+    margin-left: 30vw;
+    width: 40vw;
+    height: 40vw;
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
+    grid-template-columns: repeat(8, 5vw);
+    grid-template-rows: repeat(8, 5vw);
 }
 
 .board-square {
@@ -44,6 +44,6 @@ img:hover {
 
 .board-container img{
     border: none;
-    height: 50px;
-    width: 50px;
+    height: 4vw;
+    width: 4vw;
 }

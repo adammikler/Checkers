@@ -60,6 +60,7 @@ function whiteCapture() {
     for (let i = 0; i < board.length; i++) {
         if (board[i] == 1 && board[i - 7] == -1 && board[i - 14] == 0) {
             let capture = document.getElementById(i - 14).addEventListener('click', whiteCaptureOne);
+
             function whiteCaptureOne(event){
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i - 7).innerHTML = '';
@@ -68,6 +69,7 @@ function whiteCapture() {
                 board[i - 7] = 0;
                 board[i - 18] = 1;
                 capture.removeEventListener('click', whiteCaptureOne)
+                whiteCapture()
                 return(update)
             }
         } else if (board[i] == 1 && board[i - 9] == -1 && board[i - 18] == 0) {
@@ -80,6 +82,7 @@ function whiteCapture() {
                 board[i - 9] = 0;
                 board[i - 18] = 1;
                 capture2.removeEventListener('click', WhiteCaptureTwo)
+                whiteCapture()
                 return(update)
             }
         }
@@ -97,6 +100,7 @@ function blackCapture() {
                     board[i] = 0;
                     board[i + 7] = 0;
                     board[i + 18] = 1;
+                    blackCapture()
                     return(update)
             });
         } else if (board[i] == -1 && board[i + 9] == 1 && board[i + 18] == 0) {
@@ -107,6 +111,7 @@ function blackCapture() {
                 board[i] = 0;
                 board[i + 9] = 0;
                 board[i + 18] = 1;
+                blackCapture()
                 return(update)
             });
         }   

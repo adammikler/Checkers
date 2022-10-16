@@ -55,30 +55,33 @@ function generateBoard() {
     };
 };
 
-
 function whiteCapture() {
     let update = true;
     for (let i = 0; i < board.length; i++) {
         if (board[i] == 1 && board[i - 7] == -1 && board[i - 14] == 0) {
-            document.getElementById(i - 14).addEventListener ('click', () => {
+            let capture = document.getElementById(i - 14).addEventListener('click', whiteCaptureOne);
+            function whiteCaptureOne(event){
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i - 7).innerHTML = '';
                 document.getElementById(i - 14).innerHTML = '<img src="/pieces/white.png">';
                 board[i] = 0;
                 board[i - 7] = 0;
                 board[i - 18] = 1;
+                capture.removeEventListener('click', whiteCaptureOne)
                 return(update)
-            })
+            }
         } else if (board[i] == 1 && board[i - 9] == -1 && board[i - 18] == 0) {
-            document.getElementById(i - 18).addEventListener ('click', () => {
+            let capture2 = document.getElementById(i - 18).addEventListener('click', WhiteCaptureTwo);
+            function WhiteCaptureTwo(event) {
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i - 9).innerHTML = '';
                 document.getElementById(i - 18).innerHTML = '<img src="/pieces/white.png">';
                 board[i] = 0;
                 board[i - 9] = 0;
                 board[i - 18] = 1;
+                capture2.removeEventListener('click', WhiteCaptureTwo)
                 return(update)
-            }) 
+            }
         }
     }
 }
@@ -174,7 +177,7 @@ function Move(i, white, black) {
                 board[i + 9] = -1;
                 black.updateTurn(black);
                 white.updateTurn(white);
-                move2.removeEventListener('click' , blackMoveTwo);
+                move2.removeEventListener('click', blackMoveTwo);
             }
         } else if (board[i + 7] == 0) {
             let move1 = document.getElementById(i + 7);

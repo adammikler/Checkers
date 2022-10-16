@@ -57,10 +57,8 @@ function generateBoard() {
 
 
 function whiteCapture(white, black) {
-    console.log('testFunc')
     for (let i = 0; i < board.length; i++) {
-        if (board[i - 7] == -1 && board[i - 14] == 0) {
-            console.log('test1')
+        if (board[i] == 1 && board[i - 7] == -1 && board[i - 14] == 0) {
             document.getElementById(i - 14).addEventListener ('click', () => {
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i - 7).innerHTML = '';
@@ -70,7 +68,7 @@ function whiteCapture(white, black) {
                 black.updateTurn(black);
                 white.updateTurn(white);
             })
-        } else if (board[i - 9] == -1 && board[i - 18] == 0) {
+        } else if (board[i] == 1 && board[i - 9] == -1 && board[i - 18] == 0) {
             document.getElementById(i - 18).addEventListener ('click', () => {
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i - 9).innerHTML = '';
@@ -86,7 +84,7 @@ function whiteCapture(white, black) {
 
 function blackCapture(player, white, black) {
     for (let i = 0; i < board.length; i++) {
-        if (board[i + 7] == 1 && board[i + 14] == 0) {
+        if (board[i] == -1 && board[i + 7] == 1 && board[i + 14] == 0) {
                 document.getElementById(i + 14).addEventListener ('click', () => {
                     document.getElementById(i).innerHTML = '';
                     document.getElementById(i + 7).innerHTML = '';
@@ -96,7 +94,7 @@ function blackCapture(player, white, black) {
                     black.updateTurn(black);
                     white.updateTurn(white);
             });
-        } else if (board[i + 9] == 1 && board[i + 18] == 0) {
+        } else if (board[i] == -1 && board[i + 9] == 1 && board[i + 18] == 0) {
             document.getElementById(i + 18).addEventListener ('click', () => {
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i + 9).innerHTML = '';
@@ -221,8 +219,8 @@ const Player = (turn, color) => {
 
 function game() {
     generateBoard();
-    const white = Player(1, 'white');
-    const black = Player(0, 'black');
+    const white = Player(0, 'white');
+    const black = Player(1, 'black');
     for (let i = 0; i < 64; i++) {
         document.getElementById(i).addEventListener ('click', () => {
             Move(i, white, black);

@@ -56,10 +56,10 @@ function generateBoard() {
 };
 
 function whiteCapture() {
-    let update = true;
     for (let i = 0; i < board.length; i++) {
         if (board[i] == 1 && board[i - 7] == -1 && board[i - 14] == 0) {
-            let capture = document.getElementById(i - 14).addEventListener('click', whiteCaptureOne);
+            let capture = document.getElementById(i - 14);
+            capture.addEventListener('click', whiteCaptureOne);
 
             function whiteCaptureOne(event){
                 document.getElementById(i).innerHTML = '';
@@ -68,12 +68,14 @@ function whiteCapture() {
                 board[i] = 0;
                 board[i - 7] = 0;
                 board[i - 18] = 1;
-                capture.removeEventListener('click', whiteCaptureOne)
-                whiteCapture()
-                return(update)
+                capture.removeEventListener('click', whiteCaptureOne);
+                whiteCapture();
+                return(true);
             }
         } else if (board[i] == 1 && board[i - 9] == -1 && board[i - 18] == 0) {
-            let capture2 = document.getElementById(i - 18).addEventListener('click', WhiteCaptureTwo);
+            let capture2 = document.getElementById(i - 18);
+            capture2.addEventListener('click', WhiteCaptureTwo);
+
             function WhiteCaptureTwo(event) {
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i - 9).innerHTML = '';
@@ -81,39 +83,46 @@ function whiteCapture() {
                 board[i] = 0;
                 board[i - 9] = 0;
                 board[i - 18] = 1;
-                capture2.removeEventListener('click', WhiteCaptureTwo)
-                whiteCapture()
-                return(update)
+                capture2.removeEventListener('click', WhiteCaptureTwo);
+                whiteCapture();
+                return(true);
             }
         }
     }
 }
 
 function blackCapture() {
-    let update = true;
     for (let i = 0; i < board.length; i++) {
         if (board[i] == -1 && board[i + 7] == 1 && board[i + 14] == 0) {
-                document.getElementById(i + 14).addEventListener ('click', () => {
-                    document.getElementById(i).innerHTML = '';
-                    document.getElementById(i + 7).innerHTML = '';
-                    document.getElementById(i + 14).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
-                    board[i] = 0;
-                    board[i + 7] = 0;
-                    board[i + 18] = 1;
-                    blackCapture()
-                    return(update)
-            });
+            let capture = document.getElementById(i + 14);
+            capture.addEventListener ('click', blackCaputeone);
+
+            function blackCaputeone(event) {
+                document.getElementById(i).innerHTML = '';
+                document.getElementById(i + 7).innerHTML = '';
+                document.getElementById(i + 14).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
+                board[i] = 0;
+                board[i + 7] = 0;
+                board[i + 18] = 1;
+                capture.removeEventListener('click', blackCaputeone);
+                blackCapture();
+                return(true);
+            };
         } else if (board[i] == -1 && board[i + 9] == 1 && board[i + 18] == 0) {
-            document.getElementById(i + 18).addEventListener ('click', () => {
+            let capture2 = document.getElementById(i + 18)
+            capture2.addEventListener ('click', blackCaputerTwo);
+            
+            function blackCaputerTwo(event) {
                 document.getElementById(i).innerHTML = '';
                 document.getElementById(i + 9).innerHTML = '';
                 document.getElementById(i + 18).innerHTML = '<img class="black-pieces" src="/pieces/white.png">';
                 board[i] = 0;
                 board[i + 9] = 0;
                 board[i + 18] = 1;
-                blackCapture()
-                return(update)
-            });
+                capture2.removeEventListener('click', blackCaputerTwo);
+                blackCapture();
+                return(true);
+            };
         }   
     }
 }
